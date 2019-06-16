@@ -21,9 +21,12 @@ services:
         condition: service_healthy
     user: $MATLAB_USER
     working_dir: /src
+    # command: > 
+    #   /bin/bash -c
+    #    "matlab -nodisplay -r \"res=run(tests.Main);disp(res);if all([res.Passed])  exit, else exit(1), end;\""
     command: > 
       /bin/bash -c
-       "matlab -nodisplay -r \"res=run(tests.Main);disp(res);if all([res.Passed])  exit, else exit(1), end;\""
+       "cat /tmp/aws_muser.log"
     mac_address: $MATLAB_HOSTID
     volumes:
       - .:/src
