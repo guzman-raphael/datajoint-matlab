@@ -1,20 +1,18 @@
 sudo: required
 services: 
 - docker
-
- slim: &slim
+slim: &slim
       stage: Slim9.9
       os: linux
       language: shell
       script:
         - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
 
- basenv: &basenv
+basenv: &basenv
       - MATLAB_USER: $MATLAB_USER
       - MATLAB_HOSTID: $MATLAB_HOSTID
       - DOCKER_CLIENT_TIMEOUT: 120
       - COMPOSE_HTTP_TIMEOUT: 120
-
 jobs:
   include:
     - <<: *slim
