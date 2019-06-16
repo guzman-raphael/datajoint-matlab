@@ -2,16 +2,13 @@ sudo: required
 services: 
 - docker
 
- slim: &slim
-      stage: Slim9.9
+jobs:
+  include:
+    - stage: Slim9.9
       os: linux
       language: shell
       script:
         - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
-
- jobs:
-  include:
-    - <<: *slim
       env:
       - MATLAB_USER: $MATLAB_USER
       - MATLAB_HOSTID: $MATLAB_HOSTID
@@ -20,7 +17,11 @@ services:
       - MATLAB_LICENSE: $MATLAB_LICENSE_R2018b
       - MATLAB_VERSION: R2018b
       - MYSQL_TAG: 8.0-slim9.9
-    - <<: *slim
+    - stage: Slim9.9
+      os: linux
+      language: shell
+      script:
+        - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
       env:
       - MATLAB_USER: $MATLAB_USER
       - MATLAB_HOSTID: $MATLAB_HOSTID
@@ -29,7 +30,11 @@ services:
       - MATLAB_LICENSE: $MATLAB_LICENSE_R2018b
       - MATLAB_VERSION: R2018b
       - MYSQL_TAG: 5.7-slim9.9
-    - <<: *slim
+    - stage: Slim9.9
+      os: linux
+      language: shell
+      script:
+        - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
       env:
       - MATLAB_USER: $MATLAB_USER
       - MATLAB_HOSTID: $MATLAB_HOSTID
