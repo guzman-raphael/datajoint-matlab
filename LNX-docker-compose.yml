@@ -1,11 +1,11 @@
 # docker-compose -f LNX-docker-compose.yml --env-file LNX.env up --build --exit-code-from dj
 version: '2.2'
-x-net: &net
-  networks:
-      - main
+# x-net: &net
+  # networks:
+  #     - main
 services:
   dj:
-    <<: *net
+    # <<: *net
     environment:
     - DISPLAY
     - MATLAB_LICENSE
@@ -32,7 +32,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
 
   mysql:
-    <<: *net
+    # <<: *net
     image: raphaelguzman/mysql:$MYSQL_TAG
     environment:
       - MYSQL_ROOT_PASSWORD=simple
