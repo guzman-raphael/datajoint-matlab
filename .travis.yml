@@ -6,14 +6,9 @@ slim: &slim
       os: linux
       language: shell
       script:
-        - echo "This is raphael1"
-        - echo $MATLAB_LICENSE
-        - echo "This is raphael2"
-        - var=MATLAB_LICENSE_${MATLAB_VERSION}
-        - MATLAB_LICENSE=$(eval echo "\$$var")
-        - echo "This is raphael3"
-        - echo $MATLAB_LICENSE
-        - echo "This is raphael4"
+        # - var=MATLAB_LICENSE_${MATLAB_VERSION}
+        # - MATLAB_LICENSE=$(eval echo "\$$var")
+        - MATLAB_LICENSE=$MATLAB_LICENSE_R2018b
         - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
 jobs:
   include:
