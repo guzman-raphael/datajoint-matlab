@@ -16,8 +16,6 @@ services:
     - DJ_TEST_USER=datajoint
     - DJ_TEST_PASSWORD=datajoint
     image: raphaelguzman/matlab:${MATLAB_VERSION}-slim9.9
-    # links:
-    #   - mysql
     depends_on:
       mysql:
         condition: service_healthy
@@ -33,7 +31,7 @@ services:
 
   mysql:
     <<: *net
-    image: raphaelguzman/mysql:$MYSQL_TAG
+    image: raphaelguzman/mysql:${MYSQL_TAG}
     environment:
       - MYSQL_ROOT_PASSWORD=simple
 
