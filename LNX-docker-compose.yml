@@ -37,6 +37,3 @@ services:
 
 networks:
   main:
-    ipam:
-      config:
-        - subnet: "172.168.1.5/24"
