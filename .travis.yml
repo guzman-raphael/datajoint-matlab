@@ -10,6 +10,8 @@ slim: &slim
         # - MATLAB_LICENSE=$(eval echo "\$$var")
         # - MATLAB_LICENSE=$MATLAB_LICENSE_R2018b
         # - echo $MATLAB_LICENSE
+        - whoami
+        - id
         - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
 jobs:
   include:
