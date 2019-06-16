@@ -9,7 +9,7 @@ slim: &slim
         - echo "This is raphael1"
         - echo $MATLAB_LICENSE
         - echo "This is raphael2"
-        - var=MATLAB_LICENSE_${MATLAB_VERSION)
+        - var=MATLAB_LICENSE_${MATLAB_VERSION}
         - MATLAB_LICENSE=$(eval echo "\$$var")
         - echo "This is raphael3"
         - echo $MATLAB_LICENSE
