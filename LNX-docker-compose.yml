@@ -1,5 +1,5 @@
 # docker-compose -f LNX-docker-compose.yml --env-file LNX.env up --build --exit-code-from dj
-version: '2.4'
+version: '2.2'
 x-net: &net
   networks:
       - main

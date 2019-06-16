@@ -2,44 +2,36 @@ sudo: required
 services: 
 - docker
 
-jobs:
-  include:
-    - stage: Slim9.9
+ slim: &slim
+      stage: Slim9.9
       os: linux
       language: shell
       script:
         - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
-      env:
+
+ basenv: &basenv
       - MATLAB_USER: $MATLAB_USER
       - MATLAB_HOSTID: $MATLAB_HOSTID
       - DOCKER_CLIENT_TIMEOUT: 120
       - COMPOSE_HTTP_TIMEOUT: 120
+
+jobs:
+  include:
+    - <<: *slim
+      env:
+      <<: *basenv
       - MATLAB_LICENSE: $MATLAB_LICENSE_R2018b
       - MATLAB_VERSION: R2018b
       - MYSQL_TAG: 8.0-slim9.9
-    - stage: Slim9.9
-      os: linux
-      language: shell
-      script:
-        - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
+    - <<: *slim
       env:
-      - MATLAB_USER: $MATLAB_USER
-      - MATLAB_HOSTID: $MATLAB_HOSTID
-      - DOCKER_CLIENT_TIMEOUT: 120
-      - COMPOSE_HTTP_TIMEOUT: 120
+      <<: *basenv
       - MATLAB_LICENSE: $MATLAB_LICENSE_R2018b
       - MATLAB_VERSION: R2018b
       - MYSQL_TAG: 5.7-slim9.9
-    - stage: Slim9.9
-      os: linux
-      language: shell
-      script:
-        - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
+    - <<: *slim
       env:
-      - MATLAB_USER: $MATLAB_USER
-      - MATLAB_HOSTID: $MATLAB_HOSTID
-      - DOCKER_CLIENT_TIMEOUT: 120
-      - COMPOSE_HTTP_TIMEOUT: 120
+      <<: *basenv
       - MATLAB_LICENSE: $MATLAB_LICENSE_R2018b
       - MATLAB_VERSION: R2018b
       - MYSQL_TAG: 5.6-slim9.9
