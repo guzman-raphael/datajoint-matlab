@@ -6,6 +6,13 @@ slim: &slim
       os: linux
       language: shell
       script:
+        - echo "This is raphael1"
+        - echo $MATLAB_LICENSE
+        - echo "This is raphael2"
+        - MATLAB_LICENSE=${MATLAB_LICENSE_${MATLAB_VERSION}}
+        - echo "This is raphael3"
+        - echo $MATLAB_LICENSE
+        - echo "This is raphael4"
         - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
 jobs:
   include:
@@ -13,8 +20,5 @@ jobs:
       env:
       - MATLAB_VERSION: R2018b
       - MYSQL_TAG: 5.7-slim9.9
-      - MATLAB_LICENSE: "$MATLAB_LICENSE_R2018b"
-      - MATLAB_USER: "$MATLAB_USER"
-      - MATLAB_HOSTID: "$MATLAB_HOSTID"
       - DOCKER_CLIENT_TIMEOUT: 120
       - COMPOSE_HTTP_TIMEOUT: 120
