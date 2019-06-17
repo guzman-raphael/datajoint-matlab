@@ -7,7 +7,7 @@ slim: &slim
       language: shell
       script:
         # - license=MATLAB_LICENSE_${MATLAB_VERSION}
-        - MATLAB_LICENSE=$MATLAB_LICENSE_R2018b
+        - export MATLAB_LICENSE=$MATLAB_LICENSE_R2018b
         - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
 jobs:
   include:
