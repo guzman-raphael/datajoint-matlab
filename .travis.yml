@@ -1,8 +1,11 @@
 sudo: required
 services: 
 - docker
-# glob_var: &glob_var
-
+glob_var: &glob_var
+  - MATLAB_VERSION: R2018b
+  - MYSQL_TAG: 5.7-slim9.9
+  - DOCKER_CLIENT_TIMEOUT: 120
+  - COMPOSE_HTTP_TIMEOUT: 120
 slim: &slim
   stage: Slim9.9
   os: linux
@@ -16,7 +19,5 @@ jobs:
   include:
     - <<: *slim
       env:
-      - MATLAB_VERSION: R2018b
-      - MYSQL_TAG: 5.7-slim9.9
-      - DOCKER_CLIENT_TIMEOUT: 120
-      - COMPOSE_HTTP_TIMEOUT: 120
+      <<: *glob_var
+      # - MYSQL_TAG: 5.7-slim9.9
