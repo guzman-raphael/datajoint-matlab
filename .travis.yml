@@ -1,15 +1,17 @@
 sudo: required
 services: 
 - docker
+# glob_var: &glob_var
+
 slim: &slim
-      stage: Slim9.9
-      os: linux
-      language: shell
-      script:
-        - license=MATLAB_LICENSE_${MATLAB_VERSION}
-        # - MATLAB_LICENSE=$(eval echo "\$$license")
-        - export MATLAB_LICENSE=$(eval echo "\$$license")
-        - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
+  stage: Slim9.9
+  os: linux
+  language: shell
+  script:
+    - license=MATLAB_LICENSE_${MATLAB_VERSION}
+    # - MATLAB_LICENSE=$(eval echo "\$$license")
+    - export MATLAB_LICENSE=$(eval echo "\$$license")
+    - docker-compose -f LNX-docker-compose.yml up --exit-code-from dj
 jobs:
   include:
     - <<: *slim
