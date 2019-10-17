@@ -1,5 +1,6 @@
 classdef Main < ...
     tests.TestConnection & ...
+    tests.TestERD & ...
     tests.TestTls
 
     properties (Constant)
@@ -11,6 +12,7 @@ classdef Main < ...
             'host', getenv('DJ_TEST_HOST'), ...
             'user', getenv('DJ_TEST_USER'), ...
             'password', getenv('DJ_TEST_PASSWORD'));
+        PREFIX = 'DjTest';
     end
 
     methods (TestClassSetup)
@@ -31,7 +33,7 @@ classdef Main < ...
                 curr_conn.query(sprintf('%s',cmd{:}));
 
                 cmd = {...
-                'GRANT ALL PRIVILEGES ON `djtest%%`.* TO ''datajoint''@''%%'';'
+                ['GRANT ALL PRIVILEGES ON `' testCase.PREFIX '%%`.* TO ''datajoint''@''%%'';']
                 };
                 curr_conn.query(sprintf('%s',cmd{:}));
 
@@ -42,7 +44,7 @@ classdef Main < ...
                 curr_conn.query(sprintf('%s',cmd{:}));
 
                 cmd = {...
-                'GRANT SELECT ON `djtest%%`.* TO ''djview''@''%%'';'
+                ['GRANT SELECT ON `' testCase.PREFIX '%%`.* TO ''djview''@''%%'';']
                 };
                 curr_conn.query(sprintf('%s',cmd{:}));
 
@@ -54,24 +56,24 @@ classdef Main < ...
                 curr_conn.query(sprintf('%s',cmd{:}));
 
                 cmd = {...
-                'GRANT SELECT ON `djtest%%`.* TO ''djssl''@''%%'';'
+                ['GRANT SELECT ON `' testCase.PREFIX '%%`.* TO ''djssl''@''%%'';']
                 };
                 curr_conn.query(sprintf('%s',cmd{:}));
             else
                 cmd = {...
-                'GRANT ALL PRIVILEGES ON `djtest%%`.* TO ''datajoint''@''%%'' '
+                ['GRANT ALL PRIVILEGES ON `' testCase.PREFIX '%%`.* TO ''datajoint''@''%%'' ']
                 'IDENTIFIED BY ''datajoint'';'
                 };
                 curr_conn.query(sprintf('%s',cmd{:}));
 
                 cmd = {...
-                'GRANT SELECT ON `djtest%%`.* TO ''djview''@''%%'' '
+                ['GRANT SELECT ON `' testCase.PREFIX '%%`.* TO ''djview''@''%%'' ']
                 'IDENTIFIED BY ''djview'';'
                 };
                 curr_conn.query(sprintf('%s',cmd{:}));
 
                 cmd = {...
-                'GRANT SELECT ON `djtest%%`.* TO ''djssl''@''%%'' '
+                ['GRANT SELECT ON `' testCase.PREFIX '%%`.* TO ''djssl''@''%%'' ']
                 'IDENTIFIED BY ''djssl'' '
                 'REQUIRE SSL;'
                 };
@@ -88,6 +90,11 @@ classdef Main < ...
             curr_conn = dj.conn(tests.Main.CONN_INFO_ROOT.host, ...
                 tests.Main.CONN_INFO_ROOT.user, tests.Main.CONN_INFO_ROOT.password, '',true);
 
+            res = curr_conn.query(['SHOW DATABASES LIKE "' tests.Main.PREFIX '_%";']);
+            for i = 1:length(res.(['Database (' tests.Main.PREFIX '_%)']))
+                curr_conn.query(['DROP DATABASE ' res.(['Database (' tests.Main.PREFIX '_%)']){i} ';']);
+            end
+
             cmd = {...
             'DROP USER ''datajoint''@''%%'';'
             'DROP USER ''djview''@''%%'';'
@@ -96,6 +103,14 @@ classdef Main < ...
             res = curr_conn.query(sprintf('%s',cmd{:}));
             curr_conn.delete;
 
+            % Remove getSchemas to ensure they are created by tests.
+            files = dir('test_schemas')
+            dirFlags = [files.isdir] & ~strcmp({files.name},'.') & ~strcmp({files.name},'..')
+            subFolders = files(dirFlags)
+            for k = 1 : length(subFolders)
+                delete(['test_schemas/' subFolders(k).name '/getSchema.m'])
+                % delete(['test_schemas/+University/getSchema.m'])
+            end
             warning('on','MATLAB:RMDIR:RemovedFromPath');
         end
     end

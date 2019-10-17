@@ -14,7 +14,8 @@ end
 
 if ~dbname
     disp 'No database name entered. Quitting.'
-elseif isempty(regexp(dbname,'^[a-z][a-z0-9_]*$','once'))
+% elseif isempty(regexp(dbname,'^[a-z][a-z0-9_]*$','once'))
+elseif isempty(regexp(dbname,'^[a-zA-Z][a-zA-Z0-9_]*$','once'))
     error 'Invalid database name. Begin with a letter, only lowercase alphanumerical and underscores.'
 else
     % create database
