@@ -1,17 +1,19 @@
-classdef TestERD < matlab.unittest.TestCase
+classdef TestERD < tests.Prep
     % TestERD tests unusual ERD scenarios.
     methods (Test)
         function testDraw(testCase)
             st = dbstack;
             disp(['---------------' st(1).name '---------------']);
-            package = 'University'
+            package = 'University';
 
+            % addpath(['/src/+tests/test_schemas/+' package]);
+            addpath('/src/+tests/test_schemas');
             c1 = dj.conn(...
                 testCase.CONN_INFO.host,...
                 testCase.CONN_INFO.user,...
                 testCase.CONN_INFO.password,'',true);
 
-            dj.createSchema(package,'test_schemas', [testCase.PREFIX '_university']);
+            dj.createSchema(package,'/src/+tests/test_schemas', [testCase.PREFIX '_university']);
 
             insert(University.Student, {
                0   'John'   'Smith'
@@ -30,8 +32,8 @@ classdef TestERD < matlab.unittest.TestCase
 
             % schemaObject = dj.Schema(dj.conn, 'Schema', 'test_schema');
 
-
-
+            % rmpath(['/src/test_schemas/+' package]);
+            rmpath('/src/+tests/test_schemas');
         end
     end
 end

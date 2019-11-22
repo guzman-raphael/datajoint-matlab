@@ -3,3 +3,4 @@ mym/
 *.mltbx
 *.env
 notebook
+*getSchema.m
