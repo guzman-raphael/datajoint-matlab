@@ -6,14 +6,12 @@ classdef TestERD < tests.Prep
             disp(['---------------' st(1).name '---------------']);
             package = 'University';
 
-            % addpath(['/src/+tests/test_schemas/+' package]);
-            addpath('/src/+tests/test_schemas');
             c1 = dj.conn(...
-                testCase.CONN_INFO.host,...
+                testCase.CONN_INFO.host,... 
                 testCase.CONN_INFO.user,...
                 testCase.CONN_INFO.password,'',true);
 
-            dj.createSchema(package,'/src/+tests/test_schemas', [testCase.PREFIX '_university']);
+            dj.createSchema(package,[testCase.test_root '/test_schemas'], [testCase.PREFIX '_university']);
 
             insert(University.Student, {
                0   'John'   'Smith'
@@ -23,17 +21,10 @@ classdef TestERD < tests.Prep
 
             University.Student
 
-            dj.ERD(University.Student)
-            savefig('test.fig')
+            dj.ERD(University.Student);
+            savefig('test.fig');
+            % delete 'test.fig';
 
-            % c1.query('SHOW DATABASES;')
-
-            % dj.createSchema('new','Schema','test_schema')
-
-            % schemaObject = dj.Schema(dj.conn, 'Schema', 'test_schema');
-
-            % rmpath(['/src/test_schemas/+' package]);
-            rmpath('/src/+tests/test_schemas');
         end
     end
 end

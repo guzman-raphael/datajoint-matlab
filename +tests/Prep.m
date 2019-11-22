@@ -11,12 +11,22 @@ classdef Prep < matlab.unittest.TestCase
             'password', getenv('DJ_TEST_PASSWORD'));
         PREFIX = 'djtest';
     end
-
+    properties
+        test_root;
+    end
+    methods
+        function obj = Prep()
+            % Initialize test_root
+            test_pkg_details = what('tests');
+            [test_root, ~, ~] = fileparts(test_pkg_details.path);
+            obj.test_root = [test_root '/+tests'];
+        end
+     end
     methods (TestClassSetup)
         function init(testCase)
             disp('---------------INIT---------------');
             clear functions;
-            testCase.addTeardown(@testCase.dispose);
+            addpath([testCase.test_root '/test_schemas']);
 
             curr_conn = dj.conn(testCase.CONN_INFO_ROOT.host, ...
                 testCase.CONN_INFO_ROOT.user, testCase.CONN_INFO_ROOT.password,'',true);
@@ -78,22 +88,21 @@ classdef Prep < matlab.unittest.TestCase
             end
         end
     end
-       
-    methods (Static)
-        function dispose()
+    methods (TestMethodTeardown)
+        function dispose(testCase)
             disp('---------------DISP---------------');
             warning('off','MATLAB:RMDIR:RemovedFromPath');
             
             curr_conn = dj.conn(tests.Main.CONN_INFO_ROOT.host, ...
                 tests.Main.CONN_INFO_ROOT.user, tests.Main.CONN_INFO_ROOT.password, '',true);
 
-            % conn.query('SET FOREIGN_KEY_CHECKS=0')
-            % cur = conn.query('SHOW DATABASES LIKE "{}\_%%"'.format(PREFIX))
-            % for db in cur.fetchall():
-            %     conn.query('DROP DATABASE `{}`'.format(db[0]))
-            % conn.query('SET FOREIGN_KEY_CHECKS=1')
-
-
+            curr_conn.query('SET FOREIGN_KEY_CHECKS=0;');
+            res = curr_conn.query(['SHOW DATABASES LIKE "' tests.Main.PREFIX '_%";']);
+            for i = 1:length(res.(['Database (' tests.Main.PREFIX '_%)']))
+                curr_conn.query(['DROP DATABASE ' res.(['Database (' tests.Main.PREFIX '_%)']){i} ';']);
+            end
+            curr_conn.query('SET FOREIGN_KEY_CHECKS=1;');
+            
             cmd = {...
             'DROP USER ''datajoint''@''%%'';'
             'DROP USER ''djview''@''%%'';'
@@ -102,6 +111,15 @@ classdef Prep < matlab.unittest.TestCase
             res = curr_conn.query(sprintf('%s',cmd{:}));
             curr_conn.delete;
 
+            % Remove getSchemas to ensure they are created by tests.
+            files = dir([testCase.test_root '/test_schemas']);
+            dirFlags = [files.isdir] & ~strcmp({files.name},'.') & ~strcmp({files.name},'..');
+            subFolders = files(dirFlags);
+            for k = 1 : length(subFolders)
+                delete([testCase.test_root '/test_schemas/' subFolders(k).name '/getSchema.m']);
+                % delete(['test_schemas/+University/getSchema.m'])
+            end
+            rmpath([testCase.test_root '/+tests/test_schemas']);
             warning('on','MATLAB:RMDIR:RemovedFromPath');
         end
     end
