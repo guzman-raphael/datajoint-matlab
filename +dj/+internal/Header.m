@@ -1,6 +1,7 @@
 classdef Header < matlab.mixin.Copyable
     % relation header: a list of attributes, their types, etc.
     % This class is used internally by DataJoint and should not
+    % be modified.
     
     properties(SetAccess=private)
         info          % table info
