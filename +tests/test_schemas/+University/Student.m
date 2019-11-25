@@ -1,6 +1,6 @@
 %{
 # Student
-id : int   
+student_id : int   
 ---
 first_name : varchar(30)
 last_name  : varchar(30)
