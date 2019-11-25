@@ -4,3 +4,4 @@ mym/
 *.env
 notebook
 *getSchema.m
+docker-compose.yml
