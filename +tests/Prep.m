@@ -26,7 +26,6 @@ classdef Prep < matlab.unittest.TestCase
         function init(testCase)
             disp('---------------INIT---------------');
             clear functions;
-            % testCase.addTeardown(@testCase.dispose);
             addpath([testCase.test_root '/test_schemas']);
 
             curr_conn = dj.conn(testCase.CONN_INFO_ROOT.host, ...
@@ -124,39 +123,4 @@ classdef Prep < matlab.unittest.TestCase
             warning('on','MATLAB:RMDIR:RemovedFromPath');
         end
     end
-    % methods (Static)
-    %     function dispose()
-    %         disp('---------------DISP---------------');
-    %         warning('off','MATLAB:RMDIR:RemovedFromPath');
-            
-    %         curr_conn = dj.conn(tests.Main.CONN_INFO_ROOT.host, ...
-    %             tests.Main.CONN_INFO_ROOT.user, tests.Main.CONN_INFO_ROOT.password, '',true);
-
-    %         curr_conn.query('SET FOREIGN_KEY_CHECKS=0;');
-    %         res = curr_conn.query(['SHOW DATABASES LIKE "' tests.Main.PREFIX '_%";']);
-    %         for i = 1:length(res.(['Database (' tests.Main.PREFIX '_%)']))
-    %             curr_conn.query(['DROP DATABASE ' res.(['Database (' tests.Main.PREFIX '_%)']){i} ';']);
-    %         end
-    %         curr_conn.query('SET FOREIGN_KEY_CHECKS=1;');
-            
-    %         cmd = {...
-    %         'DROP USER ''datajoint''@''%%'';'
-    %         'DROP USER ''djview''@''%%'';'
-    %         'DROP USER ''djssl''@''%%'';'
-    %         };
-    %         res = curr_conn.query(sprintf('%s',cmd{:}));
-    %         curr_conn.delete;
-
-    %         % Remove getSchemas to ensure they are created by tests.
-    %         files = dir(['/src/+tests' '/test_schemas']);
-    %         dirFlags = [files.isdir] & ~strcmp({files.name},'.') & ~strcmp({files.name},'..');
-    %         subFolders = files(dirFlags);
-    %         for k = 1 : length(subFolders)
-    %             delete(['/src/+tests' '/test_schemas/' subFolders(k).name '/getSchema.m']);
-    %             % delete(['test_schemas/+University/getSchema.m'])
-    %         end
-    %         rmpath(['/src/+tests' '/+tests/test_schemas']);
-    %         warning('on','MATLAB:RMDIR:RemovedFromPath');
-    %     end
-    % end
 end

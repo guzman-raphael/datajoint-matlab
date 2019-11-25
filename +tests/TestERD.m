@@ -21,7 +21,7 @@ classdef TestERD < tests.Prep
 
             University.Student
 
-            dj.ERD(University.Student);
+            dj.ERD(University.Student)
             savefig('test.fig');
             delete 'test.fig';
 
