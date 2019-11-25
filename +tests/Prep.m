@@ -88,18 +88,18 @@ classdef Prep < matlab.unittest.TestCase
             end
         end
     end
-    methods (TestMethodTeardown)
+    methods (TestClassTeardown)
         function dispose(testCase)
             disp('---------------DISP---------------');
             warning('off','MATLAB:RMDIR:RemovedFromPath');
             
-            curr_conn = dj.conn(tests.Main.CONN_INFO_ROOT.host, ...
-                tests.Main.CONN_INFO_ROOT.user, tests.Main.CONN_INFO_ROOT.password, '',true);
+            curr_conn = dj.conn(testCase.CONN_INFO_ROOT.host, ...
+                testCase.CONN_INFO_ROOT.user, testCase.CONN_INFO_ROOT.password, '',true);
 
             curr_conn.query('SET FOREIGN_KEY_CHECKS=0;');
-            res = curr_conn.query(['SHOW DATABASES LIKE "' tests.Main.PREFIX '_%";']);
-            for i = 1:length(res.(['Database (' tests.Main.PREFIX '_%)']))
-                curr_conn.query(['DROP DATABASE ' res.(['Database (' tests.Main.PREFIX '_%)']){i} ';']);
+            res = curr_conn.query(['SHOW DATABASES LIKE "' testCase.PREFIX '_%";']);
+            for i = 1:length(res.(['Database (' testCase.PREFIX '_%)']))
+                curr_conn.query(['DROP DATABASE ' res.(['Database (' testCase.PREFIX '_%)']){i} ';']);
             end
             curr_conn.query('SET FOREIGN_KEY_CHECKS=1;');
             
