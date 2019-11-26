@@ -37,6 +37,8 @@ classdef Table < handle
     
     properties(Constant)
         mysql_constants = {'CURRENT_TIMESTAMP'}
+        UUID_DATA_TYPE = 'binary(16)'
+        SPECIAL_TYPES = {'UUID'}
     end
     
     
@@ -830,6 +832,10 @@ else
 end
 assert(~any(ismember(field.comment, '"\')), ... % TODO: escape isntead
     'illegal characters in attribute comment "%s"', field.comment)
+if strcmpi(strtrim(field.type),'uuid')
+    field.comment = [':' field.type ':' field.comment];
+    field.type = dj.Table.UUID_DATA_TYPE;
+end
 sql = sprintf('`%s` %s %s COMMENT "%s",\n', ...
     field.name, field.type, default, field.comment);
 end

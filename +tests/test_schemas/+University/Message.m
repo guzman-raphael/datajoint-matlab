@@ -1,7 +1,7 @@
 %{
 # Message
--> University.Student
-msg_id : varchar(36) # uuid
+# -> University.Student
+msg_id : uuid # uuid # varchar(36)
 ---
 body : varchar(30)
 %}
