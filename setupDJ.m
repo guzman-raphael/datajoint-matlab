@@ -26,7 +26,8 @@ function setupDJ(skipPathAddition, force)
     if ~isdir(mymdir)
         fprintf('mym missing. Downloading...\n')
         target = fullfile(base, 'mym.zip');
-        mymURL = 'https://github.com/datajoint/mym/archive/master.zip';
+        % mymURL = 'https://github.com/datajoint/mym/archive/master.zip';
+        mymURL = 'https://github.com/guzman-raphael/mym/archive/binary-fix.zip';
         % mymURL = 'https://github.com/guzman-raphael/mym/archive/external-blob.zip';
         target = websave(target, mymURL);
         if isunix && ~ismac
@@ -36,7 +37,8 @@ function setupDJ(skipPathAddition, force)
             unzip(target, base)
         end
         % rename extracted mym-master directory to mym
-        movefile(fullfile(base, 'mym-master'), mymdir)
+        % movefile(fullfile(base, 'mym-master'), mymdir)
+        movefile(fullfile(base, 'mym-binary-fix'), mymdir)
         % movefile(fullfile(base, 'mym-external-blob'), mymdir)
         delete(target)
     end

@@ -19,13 +19,17 @@ classdef TestUuid < tests.Prep
             %    2   'Ben'   'Goyle'
             % });
             % insert(University.Message, struct('student_id',1,'msg_id','1d751e2e-1e74-faf8-4ab4-85fde8ef72be','body','Great campus!'));
-
-            insert(University.Message, struct('msg_id','1d751e2e-1e74-faf8-4ab4-85fde8ef72be','body','Great campus!'));
+            test_val = '1d751e2e-1e74-faf8-4ab4-85fde8ef72be';
+            insert(University.Message, struct('msg_id',test_val,'body','Great campus!'));
 
             q = University.Message
             % q = University.Message & (University.Student & 'first_name="Phil"')
 
-            res = q.fetch('msg_id')
+            res = q.fetch('msg_id');
+            
+            res.msg_id = reshape(lower(dec2hex(uint8(res.msg_id)))',1,[]);
+
+            testCase.verifyEqual(res.msg_id,  strrep(test_val, '-', ''));
         end
     end
 end
