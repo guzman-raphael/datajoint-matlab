@@ -26,10 +26,16 @@ classdef TestUuid < tests.Prep
             % q = University.Message & (University.Student & 'first_name="Phil"')
 
             res = q.fetch('msg_id');
-            
-            res.msg_id = reshape(lower(dec2hex(uint8(res.msg_id)))',1,[]);
+            value_check = res.msg_id;
+            % disp(res.msg_id);
 
-            testCase.verifyEqual(res.msg_id,  strrep(test_val, '-', ''));
+            value_check = reshape(lower(dec2hex(value_check)).',1,[]);
+            value_check = [value_check(1:8) '-' value_check(9:12) '-' value_check(13:16) '-' value_check(17:20) '-' value_check(21:end)];
+            
+            % res.msg_id = reshape(lower(dec2hex(uint8(res.msg_id))).',1,[]);
+
+            % testCase.verifyEqual(value_check,  strrep(test_val, '-', ''));
+            testCase.verifyEqual(value_check,  test_val);
         end
     end
 end
