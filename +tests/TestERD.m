@@ -14,12 +14,12 @@ classdef TestERD < tests.Prep
             dj.createSchema(package,[testCase.test_root '/test_schemas'], [testCase.PREFIX '_university']);
 
             insert(University.Student, {
-               0   'John'   'Smith'
-               1   'Phil'   'Howard'
-               2   'Ben'   'Goyle'
+               0   'John'   'Smith'  '2019-09-19 16:50'
+               1   'Phil'   'Howard' '2019-04-30 12:34:56' 
+               2   'Ben'   'Goyle'   '2019-05-11'
             });
 
-            University.Student
+            University.Student;
 
             dj.ERD(University.Student)
             savefig('test.fig');

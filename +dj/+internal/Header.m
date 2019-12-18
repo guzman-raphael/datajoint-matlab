@@ -91,7 +91,7 @@ classdef Header < matlab.mixin.Copyable
             attrs.type = cellfun(@(x) regexprep(sprintf('%s',x), ...
                 '((tiny|small|medium|big)?int)\(\d+\)','$1'), attrs.type, 'UniformOutput', false);
             attrs.alias = repmat({''}, length(attrs.name),1);
-            validFields = [attrs.isNumeric] | [attrs.isString] | [attrs.isBlob];
+            validFields = [attrs.isNumeric] | [attrs.isString] | [attrs.isBlob] | [attrs.isUuid];
             if ~all(validFields)
                 ix = find(~validFields, 1, 'first');
                 error('unsupported field type "%s" in `%s`.`%s`', ...
@@ -148,6 +148,7 @@ classdef Header < matlab.mixin.Copyable
                                 'isNumeric', true, ...  % only numeric computations allowed for now, deal with character string expressions somehow
                                 'isString', false, ...
                                 'isBlob', false, ...
+                                'isUuid', false, ...
                                 'alias', toks{1}{1});
                         else
                             % process a regular attribute
