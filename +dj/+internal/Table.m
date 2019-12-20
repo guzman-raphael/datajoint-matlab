@@ -570,14 +570,6 @@ classdef Table < handle
                 fprintf \n
             end
         end
-    end
-    
-    methods(Access=private)
-        
-        function yes = isCreated(self)
-            yes = self.schema.tableNames.isKey(self.className);
-        end
-        
         
         function definition = getDefinition(self)
             % extract the table declaration with the first percent-brace comment
@@ -589,40 +581,12 @@ classdef Table < handle
             assert(~isempty(definition), ...
                 'MissingTableDefnition:Could not find the table declaration in %s', file)
         end
-        
-        
-        function alter(self, alterStatement)
-            % dj.Table/alter
-            % alter(self, alterStatement)
-            % Executes an ALTER TABLE statement for this table.
-            % The schema is reloaded and syncDef is called.
-            sql = sprintf('ALTER TABLE  %s %s', ...
-                self.fullTableName, alterStatement);
-            self.schema.conn.query(sql);
-            disp 'table updated'
-            self.schema.reload
-            self.tableHeader = [];          % Force update of cached header
-            self.syncDef
-        end
-        
-    end
-    
-    
-    methods
-        
-        function create(self)
-            % parses the table declration and declares the table
-            
-            if self.isCreated
-                return
-            end
-            self.schema.reload   % ensure that the table does not already exist
-            if self.isCreated
-                return
-            end
-            def = self.getDefinition();
-            
+
+        function sql = declare(self, def)
+            % Parse declaration and generate the SQL CREATE TABLE code.
             % split into a columnwise cell array
+            def = strrep(def, '%{', '');
+            def = strrep(def, '%}', '');
             def = strtrim(regexp(def,'\n','split')');
             
             % append the next line to lines that end in a backslash
@@ -747,6 +711,48 @@ classdef Table < handle
             fprintf \n<SQL>\n
             fprintf(sql)
             fprintf \n</SQL>\n\n
+        end
+    end
+    
+    methods(Access=private)
+        
+        function yes = isCreated(self)
+            yes = self.schema.tableNames.isKey(self.className);
+        end
+        
+        
+        function alter(self, alterStatement)
+            % dj.Table/alter
+            % alter(self, alterStatement)
+            % Executes an ALTER TABLE statement for this table.
+            % The schema is reloaded and syncDef is called.
+            sql = sprintf('ALTER TABLE  %s %s', ...
+                self.fullTableName, alterStatement);
+            self.schema.conn.query(sql);
+            disp 'table updated'
+            self.schema.reload
+            self.tableHeader = [];          % Force update of cached header
+            self.syncDef
+        end
+        
+    end
+    
+    
+    methods
+        
+        function create(self)
+            % parses the table declration and declares the table
+            
+            if self.isCreated
+                return
+            end
+            self.schema.reload   % ensure that the table does not already exist
+            if self.isCreated
+                return
+            end
+            def = self.getDefinition();
+            
+            sql = self.declare(def);
             self.schema.conn.query(sql);
             self.schema.reload
         end
@@ -787,7 +793,7 @@ function str = readPercentBraceComment(filename)
 
 f = fopen(filename, 'rt');
 assert(f~=-1, 'Could not open %s', filename)
-str = '';
+str = ['%{' newline];
 
 % skip all lines that do not begin with a %{
 l = fgetl(f);
@@ -805,7 +811,7 @@ if ischar(l)
         str = sprintf('%s%s\n', str, l);
     end
 end
-
+str = [str '%}' newline];
 fclose(f);
 end
 

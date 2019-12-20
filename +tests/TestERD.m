@@ -19,8 +19,19 @@ classdef TestERD < tests.Prep
                2   'Ben'   'Goyle'   '2019-05-11'
             });
 
-            University.Student;
-
+            University.Student & [struct('first_name','Ben'),struct('first_name','Phil')];
+            % describe(University.Student)
+            % g = University.Student;
+            
+            % help University.Student
+            % help g
+            % b = metaclass(g)
+            % b.ContainingPackage
+            % g.info
+            % g.className
+            % g.tableHeader
+            % g.ancestors
+            % g.descendants
             dj.ERD(University.Student)
             savefig('test.fig');
             delete 'test.fig';

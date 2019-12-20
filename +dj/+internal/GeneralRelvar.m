@@ -848,6 +848,11 @@ function cond = struct2cond(keys, header)
                 assert(ischar(value), ...
                     'Value for key.%s must be a string', field{1})
                 value = sprintf('''%s''', escapeString(value));
+            elseif attr.isUuid
+                value = strrep(value, '-', '');
+                assert(ischar(value) && length(value) == 32, ...
+                    'Value for key.%s must be a uuid HEX string.', field{1})
+                value = sprintf('X''%s''', escapeString(value));
             else
                 assert((isnumeric(value) || islogical(value)) && isscalar(value), ...
                     'Value for key.%s must be a numeric scalar', field{1});
