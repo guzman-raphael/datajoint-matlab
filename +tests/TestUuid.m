@@ -54,10 +54,11 @@ classdef TestUuid < tests.Prep
             st = dbstack;
             disp(['---------------' st(1).name '---------------']);
             q = University.Message;
-            raw_def = q.getDefinition()
-            assembled_def = describe(q)
-            q.declare(raw_def)
-            q.declare(assembled_def)
+            raw_def = q.getDefinition();
+            assembled_def = describe(q);
+            raw_sql = q.declare(raw_def);
+            assembled_sql = q.declare(assembled_def);
+            testCase.verifyEqual(raw_sql,  assembled_sql);
         end
         % function testProjection(testCase)
         %     st = dbstack;

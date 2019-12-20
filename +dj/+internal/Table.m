@@ -287,9 +287,15 @@ classdef Table < handle
                     else
                         autoIncrement = '';
                     end
+                    datajoint_type = regexp(attr.comment, ':.*:', 'match');
+                    if ~isempty(datajoint_type)
+                        datajoint_type = strip(datajoint_type{1}, ':');
+                    else
+                        datajoint_type = attr.type;
+                    end
                     str = sprintf('%s\n%-60s# %s', str, ...
                         sprintf('%-28s: %s', [attr.name default], ...
-                        [attr.type ' ' autoIncrement]), attr.comment);
+                        [datajoint_type ' ' autoIncrement]), regexprep(attr.comment, ':.*:', ''));
                 end
             end
             str = sprintf('%s\n%%}\n', str);
@@ -839,7 +845,7 @@ end
 assert(~any(ismember(field.comment, '"\')), ... % TODO: escape isntead
     'illegal characters in attribute comment "%s"', field.comment)
 if strcmpi(strtrim(field.type),'uuid')
-    field.comment = [':' field.type ':' field.comment];
+    field.comment = [':' strip(field.type) ':' field.comment];
     field.type = dj.Table.UUID_DATA_TYPE;
 end
 sql = sprintf('`%s` %s %s COMMENT "%s",\n', ...
