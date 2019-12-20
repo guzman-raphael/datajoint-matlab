@@ -22,7 +22,7 @@ classdef TestUuid < tests.Prep
             test_val2 = '12321346-1312-4123-1234-312739283795';
             insert(University.Message, struct( ...
                 'msg_id', test_val2, ...
-                'body', 'Great campus!' ...
+                'body', 'Where can I find the gym?' ...
             ));
 
             q = University.Message;
@@ -60,10 +60,5 @@ classdef TestUuid < tests.Prep
             assembled_sql = q.declare(assembled_def);
             testCase.verifyEqual(raw_sql,  assembled_sql);
         end
-        % function testProjection(testCase)
-        %     st = dbstack;
-        %     disp(['---------------' st(1).name '---------------']);
-            
-        % end
     end
 end

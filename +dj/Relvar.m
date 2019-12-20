@@ -238,16 +238,7 @@ classdef Relvar < dj.internal.GeneralRelvar & dj.internal.Table
                 valueStr = '';
                 for i = find(ix)
                     v = tuple.(header.attributes(i).name);
-                    if header.attributes(i).isUuid
-                        valueStr = sprintf('%s"{B}",', valueStr);
-                        v = strrep(v, '-', '');
-                        hexstring = v';
-                        reshapedString = reshape(hexstring,2,16);
-                        hexMtx = reshapedString.';
-                        decMtx = hex2dec(hexMtx);
-                        v = uint8(decMtx);
-                        blobs{end+1} = v;    %#ok<AGROW>
-                    elseif header.attributes(i).isString
+                    if header.attributes(i).isString
                         assert(dj.lib.isString(v), ...
                             'The field %s must be a character string', ...
                             header.attributes(i).name)
@@ -257,6 +248,15 @@ classdef Relvar < dj.internal.GeneralRelvar & dj.internal.Table
                             valueStr = sprintf('%s"{S}",', valueStr);
                             blobs{end+1} = char(v);  %#ok<AGROW>
                         end
+                    elseif header.attributes(i).isUuid
+                            valueStr = sprintf('%s"{B}",', valueStr);
+                            v = strrep(v, '-', '');
+                            hexstring = v';
+                            reshapedString = reshape(hexstring,2,16);
+                            hexMtx = reshapedString.';
+                            decMtx = hex2dec(hexMtx);
+                            v = uint8(decMtx);
+                            blobs{end+1} = v;    %#ok<AGROW>
                     elseif header.attributes(i).isBlob
                         valueStr = sprintf('%s"{M}",', valueStr);
                         blobs{end+1} = v;    %#ok<AGROW>
