@@ -104,7 +104,8 @@ classdef Relvar < dj.internal.GeneralRelvar & dj.internal.Table
                 rels = rels(counts>0);
                 
                 % confirm and delete
-                if ~dj.set('suppressPrompt') && ~strcmpi('yes',dj.internal.ask( ...
+                if dj.config('safemode') && ~strcmpi('yes',dj.internal.ask( ...
+                % if ~dj.config('suppressPrompt').result && ~strcmpi('yes',dj.internal.ask( ...
                         'Proceed to delete?'))
                     disp 'delete canceled'
                 else
@@ -195,7 +196,7 @@ classdef Relvar < dj.internal.GeneralRelvar & dj.internal.Table
             % The input argument tuples must a structure array with field
             % names exactly matching those in the table.
             % 
-            % The ignoreExtraFields setting in dj.set allows ignoring fields
+            % The ignoreExtraFields setting in dj.config allows ignoring fields
             % in the tuples structure that are not found in the table.
             %
             % The optional argument 'command' can be of the following:
@@ -281,7 +282,8 @@ classdef Relvar < dj.internal.GeneralRelvar & dj.internal.Table
             fnames = fieldnames(tuples);
             found = ismember(fnames,header.names);
             if any(~found)
-                if dj.set('ignore_extra_insert_fields')
+                if dj.config('queryIgnore_extra_insert_fields')
+                % if dj.config('ignore_extra_insert_fields').result
                     tuples = rmfield(tuples, fnames(~found));
                     fnames = fnames(found);
                 else

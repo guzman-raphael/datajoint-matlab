@@ -191,11 +191,13 @@ classdef Table < handle
             
             self.create
             if nargin<=2
-                down = dj.set('tableErdRadius');
+                down = dj.config('displayDiagram_hierarchy_radius');
+                % down = dj.config('tableErdRadius').result;
                 down = down(2);
             end
             if nargin<=1
-                up = dj.set('tableErdRadius');
+                up = dj.config('displayDiagram_hierarchy_radius');
+                % up = dj.config('tableErdRadius').result;
                 up = up(1);
             end
             
@@ -472,7 +474,8 @@ classdef Table < handle
             if isempty(path)
                 fprintf('File %s.m is not found\n', self.className);
             else
-                if ~dj.set('suppressPrompt') ...
+                if dj.config('safemode') ...
+                % if ~dj.config('suppressPrompt').result ...
                         && ~strcmpi('yes', dj.internal.ask(sprintf(['Update the table ' ...
                         'definition and class definition in %s?'],path)))
                     disp 'No? Table definition left untouched.'
@@ -559,7 +562,8 @@ classdef Table < handle
                 end
                 
                 % if any table has data, give option to cancel
-                doPrompt = doPrompt && ~dj.set('suppressPrompt');  % suppress prompt
+                doPrompt = doPrompt && dj.config('safemode');  % suppress prompt
+                % doPrompt = doPrompt && ~dj.config('suppressPrompt').result;  % suppress prompt
                 if doPrompt && ~strcmpi('yes', dj.internal.ask('Proceed to drop?'))
                     disp 'User cancelled table drop'
                 else

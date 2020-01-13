@@ -177,7 +177,8 @@ classdef Schema < handle
                 self.tableNames.remove(self.tableNames.keys);
                 
                 % reload schema information into memory: table names and field named.
-                if dj.set('verbose')
+                if strpcmpi(dj.config('loglevel'), 'DEBUG')
+                % if dj.config('verbose').result
                     fprintf('loading table definitions from %s... ', self.dbname), tic
                 end
                 tableInfo = self.conn.query(sprintf(...
@@ -189,7 +190,8 @@ classdef Schema < handle
                 re = cellfun(@(x) sprintf('^%s%s[a-z][a-z0-9_]*$',self.prefix,x), ...
                     dj.Schema.tierPrefixes, 'UniformOutput', false); % regular expressions to determine table tier
                 
-                if dj.set('verbose')
+                if strpcmpi(dj.config('loglevel'), 'DEBUG')
+                % if dj.config('verbose').result
                     fprintf('%.3g s\nloading field information... ', toc), tic
                 end
                 for info = dj.struct.fromFields(tableInfo)'
@@ -200,11 +202,13 @@ classdef Schema < handle
                     self.headers(info.name) = dj.internal.Header.initFromDatabase(self,info);
                 end
                 
-                if dj.set('verbose')
+                if strpcmpi(dj.config('loglevel'), 'DEBUG')
+                % if dj.config('verbose').result
                     fprintf('%.3g s\nloading dependencies... ', toc), tic
                 end
                 self.conn.loadDependencies(self)
-                if dj.set('verbose')
+                if strpcmpi(dj.config('loglevel'), 'DEBUG')
+                % if dj.config('verbose').result
                     fprintf('%.3g s\n',toc)
                 end
             end

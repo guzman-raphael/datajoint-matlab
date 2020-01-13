@@ -30,5 +30,13 @@ classdef TestConnection < tests.Prep
                 'anything', '', '', '', '', true), ...
                 'DataJoint:Connection:AlreadyInstantiated');
         end
+        function testPort(testCase)
+            st = dbstack;
+            disp(['---------------' st(1).name '---------------']);
+            testCase.verifyTrue(dj.conn(...
+                [testCase.CONN_INFO.host ':3307'],...
+                testCase.CONN_INFO.user,...
+                testCase.CONN_INFO.password,'',true).isConnected);
+        end
     end
 end

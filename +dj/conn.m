@@ -20,6 +20,7 @@
 
 function connObj = conn(host, user, pass, initQuery, reset, use_tls, nogui)
 persistent CONN
+dj.config; % init config
 
 if nargin < 5 || isempty(reset)
     reset = false;
@@ -46,24 +47,21 @@ if isa(CONN, 'dj.Connection') && ~reset
     end
 else
     % invoke setupDJ
-    % optional environment variables specifying the connection.
-    env  = struct(...
-        'host', 'DJ_HOST', ...
-        'user', 'DJ_USER', ...
-        'pass', 'DJ_PASS', ...
-        'init', 'DJ_INIT');
     
     % get host address
     if nargin<1 || isempty(host)
-        host = getenv(env.host);
+        host = dj.config('databaseHost');
     end
     if isempty(host)
         host = input('Enter datajoint host address> ','s');
     end
+    if ~contains(host, ':')
+        host = [host ':' dj.config('databasePort')];
+    end 
     
     % get username
     if nargin<2 || isempty(user)
-        user = getenv(env.user);
+        user = dj.config('databaseUser');
     end
     if isempty(user)
         user = input('Enter datajoint username> ', 's');
@@ -71,7 +69,7 @@ else
     
     % get password
     if nargin<3 || isempty(pass)
-        pass = getenv(env.pass);
+        pass = dj.config('databasePassword');
     end
     if isempty(pass)
         if nogui
@@ -83,12 +81,13 @@ else
     
     % get initial query (if any) to execute when a connection is (re)established
     if nargin<4 || isempty(initQuery)
-        initQuery = getenv(env.init);
+        initQuery = dj.config('connectionInit_function');
     end
 
     % get tls option
     if nargin<6 || isempty(use_tls)
-        use_tls = dj.set('use_tls');
+        use_tls = dj.config('databaseUse_tls');
+        % use_tls = dj.config('use_tls').result;
     end
     
     if islogical(use_tls) && ~use_tls

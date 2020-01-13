@@ -84,7 +84,8 @@ classdef GeneralRelvar < matlab.mixin.Copyable
                     attrList{i} = hdr.names{i};
                 end
             end
-            maxRows = dj.set('maxPreviewRows');
+            maxRows = dj.config('displayLimit');
+            % maxRows = dj.config('maxPreviewRows').result;
             preview = self.fetch(attrList{:}, sprintf('LIMIT %d', maxRows+1));
             if ~isempty(preview)
                 hasMore = length(preview) > maxRows;
