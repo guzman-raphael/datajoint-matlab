@@ -103,7 +103,7 @@ classdef TestConfig < tests.Prep
                 'location', '/home', ...
                 'subfolding', [2,2] ...
             )});
-            d = dj.config('stores(2).protocol');
+            d = dj.config('stores{2}.protocol');
             assert(strcmp(d, 's3'));
             dj.config('stores{1}.protocol', 'db');
             d = dj.config('stores{1}.protocol');
@@ -235,17 +235,22 @@ classdef TestConfig < tests.Prep
             fname = [pkg.path '/test_schemas/test_config.json'];
             % restore config
             dj.config.restore;
-            % load
-            dj.config.load(fname);
+            dj.config.save([pkg.path '/test_schemas/default.json']);
             % load into an obj and encode
             read_data = fileread(fname);
-            obj1 = orderfields(jsondecode(read_data));
+            obj1 = jsondecode(read_data);
+            defaults = jsondecode(fileread([pkg.path '/test_schemas/default.json']));
+            tmp = rmfield(defaults, intersect(fieldnames(defaults), fieldnames(obj1)));
+            names = [fieldnames(tmp); fieldnames(obj1)];
+            obj1 = orderfields(cell2struct([struct2cell(tmp); struct2cell(obj1)], names, 1));
             obj1 = rmfield(obj1, 'database_host');
             obj1 = rmfield(obj1, 'database_user');
             obj1 = rmfield(obj1, 'database_password');
             obj1 = rmfield(obj1, 'connection_init_function');
             file = jsonencode(obj1);
             % compare against current config encoded
+            % load
+            dj.config.load(fname);
             obj2 = dj.config();
             obj2 = rmfield(obj2, 'databaseHost');
             obj2 = rmfield(obj2, 'databaseUser');
@@ -254,6 +259,7 @@ classdef TestConfig < tests.Prep
             curr = jsonencode(obj2);
             curr = regexprep(curr,'[a-z0-9][A-Z]','${$0(1)}_${lower($0(2))}');
             testCase.verifyEqual(file, curr);
+            delete([pkg.path '/test_schemas/default.json']);
             dj.config.restore;
 
             % check load from file
@@ -264,7 +270,7 @@ classdef TestConfig < tests.Prep
             % load
             dj.config.load(fname);
             % load into an obj and encode
-            obj1 = dj.internal.Settings.DEFAULTS;
+            obj1 = orderfields(dj.internal.Settings.DEFAULTS);
             obj1 = rmfield(obj1, 'databaseHost');
             obj1 = rmfield(obj1, 'databaseUser');
             obj1 = rmfield(obj1, 'databasePassword');
@@ -286,8 +292,21 @@ classdef TestConfig < tests.Prep
             st = dbstack;
             disp(['---------------' st(1).name '---------------']);
             % check pull from env vars
+            %test after a load
+            pkg = what('tests');
             setenv('DJ_INIT', 'select @@version;');
             dj.config.restore;
+            
+            c = dj.config('databaseHost');
+            testCase.verifyEqual(c, getenv('DJ_HOST'));
+            c = dj.config('databaseUser');
+            testCase.verifyEqual(c, getenv('DJ_USER'));
+            c = dj.config('databasePassword');
+            testCase.verifyEqual(c, getenv('DJ_PASS'));
+            c = dj.config('connectionInit_function');
+            testCase.verifyEqual(c, getenv('DJ_INIT'));
+            
+            dj.config.load([pkg.path '/test_schemas/test_config.json']);
             
             c = dj.config('databaseHost');
             testCase.verifyEqual(c, getenv('DJ_HOST'));
@@ -309,8 +328,9 @@ classdef TestConfig < tests.Prep
             testCase.verifyEqual(c, 'secure');
             dj.config('connectionInit_function', 'SET SESSION sql_mode="TRADITIONAL";');
             c = dj.config('connectionInit_function');
-            testCase.verifyEqual(c, 'SET SESSION sql_mode="TRADITIONAL"');
+            testCase.verifyEqual(c, 'SET SESSION sql_mode="TRADITIONAL";');
             
+            setenv('DJ_INIT', '');
             dj.config.restore;
         end
     end

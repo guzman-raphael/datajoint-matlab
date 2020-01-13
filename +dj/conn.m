@@ -20,7 +20,7 @@
 
 function connObj = conn(host, user, pass, initQuery, reset, use_tls, nogui)
 persistent CONN
-dj.config; % init config
+% dj.config; % init config
 
 if nargin < 5 || isempty(reset)
     reset = false;
@@ -31,6 +31,12 @@ if nargin < 7 || isempty(nogui)
     nogui = false;
 end
 
+if nargin<1 || isempty(host)
+    host = dj.config('databaseHost');
+end
+if ~contains(host, ':')
+    host = [host ':' num2str(dj.config('databasePort'))];
+end
 
 if isa(CONN, 'dj.Connection') && ~reset
     if nargin>0
@@ -49,15 +55,9 @@ else
     % invoke setupDJ
     
     % get host address
-    if nargin<1 || isempty(host)
-        host = dj.config('databaseHost');
-    end
     if isempty(host)
         host = input('Enter datajoint host address> ','s');
     end
-    if ~contains(host, ':')
-        host = [host ':' dj.config('databasePort')];
-    end 
     
     % get username
     if nargin<2 || isempty(user)

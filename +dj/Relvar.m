@@ -105,7 +105,6 @@ classdef Relvar < dj.internal.GeneralRelvar & dj.internal.Table
                 
                 % confirm and delete
                 if dj.config('safemode') && ~strcmpi('yes',dj.internal.ask( ...
-                % if ~dj.config('suppressPrompt').result && ~strcmpi('yes',dj.internal.ask( ...
                         'Proceed to delete?'))
                     disp 'delete canceled'
                 else
