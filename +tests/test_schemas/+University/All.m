@@ -2,7 +2,7 @@
 # All
 id      : int   
 ---
-date=null    : datetime
+date=null    : date
 number=null  : float
 blob=null    : longblob
 string=null  : varchar(30)

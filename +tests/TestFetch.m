@@ -166,7 +166,7 @@ classdef TestFetch < tests.Prep
 
             testCase.verifyEqual(res(1).id,  2);
             testCase.verifyEqual(res(1).string,  'test');
-            testCase.verifyEqual(res(1).date,  '2019-12-17 13:38:00');
+            testCase.verifyEqual(res(1).date,  '2019-12-17');
             testCase.verifyEqual(res(1).number,  3.213);
             testCase.verifyEqual(res(1).blob,  [1, 2; 3, 4]);
         end
