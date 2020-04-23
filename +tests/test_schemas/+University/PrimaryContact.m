@@ -1,9 +1,9 @@
 %{
 # PrimaryContact
--> University.Student  
+(id) -> University.Student(student_id)
 ---
 first_name : varchar(30)
 last_name  : varchar(30)
 %}
-classdef Student < dj.Manual
+classdef PrimaryContact < dj.Manual
 end 
